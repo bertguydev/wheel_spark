@@ -46,6 +46,25 @@ npm start
 
 `npm start` serves the production build after `npm run build`. The type check generates Next.js route types before checking TypeScript.
 
+## Cloudflare Workers deployment
+
+The repository includes an ES module Next.js configuration, the OpenNext adapter,
+and Wrangler configuration. Install dependencies with `npm ci`.
+
+For a Git-connected Cloudflare Worker, use `npm run build:cloudflare` as the build
+command and `npx opennextjs-cloudflare deploy` as the deploy command, with the
+repository root as the root directory. Use Node.js 24 or newer.
+
+For a complete build and deploy from an authenticated terminal, run `npm run deploy`.
+To build and preview locally in the Workers runtime, run `npm run preview`.
+
+The configured Worker name is `wheel-spark`. If your existing Cloudflare Worker has
+a different name, update both `name` and `services[0].service` in `wrangler.jsonc`
+to match it. No R2 bucket is required by this app's current configuration.
+
+Generated `.open-next` and `.wrangler` files and local `.dev.vars` secrets are
+ignored by Git. See the [OpenNext setup guide](https://opennext.js.org/cloudflare/get-started).
+
 ## Structure and choices
 
 - `src/app/page.tsx`: responsive homepage.
