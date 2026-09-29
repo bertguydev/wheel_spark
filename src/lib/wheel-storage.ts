@@ -1,14 +1,13 @@
 import { validLabels, type WheelOption, type WheelState } from "./wheel.ts";
+import { HOME_TOOL, type WheelTool } from "./wheel-tools.ts";
 
-export const WHEEL_STORAGE_KEY = "sparkywheel:wheel";
+export const WHEEL_STORAGE_KEY = HOME_TOOL.storageKey;
 
 export type PersistedWheel = {
   version: 2;
   title: string;
   options: string[];
 };
-
-const DEFAULT_LABELS = ["Pizza", "Tacos", "Burgers", "Sushi", "Thai", "Pasta"];
 
 export function parseStoredWheel(raw: string | null): PersistedWheel | null {
   if (raw === null) return null;
@@ -24,18 +23,18 @@ export function parseStoredWheel(raw: string | null): PersistedWheel | null {
   }
 }
 
-export function loadWheel(): WheelState {
+export function loadWheel(tool: WheelTool = HOME_TOOL): WheelState {
   let saved: PersistedWheel | null = null;
   try {
-    saved = parseStoredWheel(window.localStorage.getItem(WHEEL_STORAGE_KEY));
+    saved = parseStoredWheel(window.localStorage.getItem(tool.storageKey));
   } catch {
     // Access to localStorage itself can throw. The wheel still works in memory.
   }
   // IDs are session-local; reconstruct them and continue new IDs from this count.
-  return { title: saved?.title ?? "", options: (saved?.options ?? DEFAULT_LABELS).map((label, id) => ({ id, label })) };
+  return { title: saved?.title ?? tool.defaults.title, options: (saved?.options ?? tool.defaults.labels).map((label, id) => ({ id, label })) };
 }
 
-export function saveWheel(options: WheelOption[], title: string): void {
+export function saveWheel(options: WheelOption[], title: string, tool: WheelTool = HOME_TOOL): void {
   const labels = options.map(({ label }) => label);
   // A temporary blank input must not replace the last usable saved wheel.
   if (!validLabels(labels)) return;
@@ -43,8 +42,8 @@ export function saveWheel(options: WheelOption[], title: string): void {
   try {
     const storage = window.localStorage;
     const serialized = JSON.stringify(data);
-    if (storage.getItem(WHEEL_STORAGE_KEY) !== serialized) {
-      storage.setItem(WHEEL_STORAGE_KEY, serialized);
+    if (storage.getItem(tool.storageKey) !== serialized) {
+      storage.setItem(tool.storageKey, serialized);
     }
   } catch {
     // Privacy restrictions and quota errors must not interrupt editing or spins.

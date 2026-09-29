@@ -1,7 +1,8 @@
-import { useRef, type Ref } from "react";
+import { useRef, type Ref, type ReactNode } from "react";
 import { MAX_OPTIONS, MIN_OPTIONS, type WheelOption } from "@/lib/wheel";
 
-export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, onAdd, onDelete, validationId, areaRef, onDone }: {
+export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, onAdd, onDelete, validationId, areaRef, onDone, presets }: {
+  presets?: ReactNode;
   title: string;
   onTitleChange: (title: string) => void;
   areaRef: Ref<HTMLElement>;
@@ -20,6 +21,7 @@ export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, o
         <h2 id="options-heading" >Your options</h2>
         <span className="count-badge">{options.length} / {MAX_OPTIONS} options</span>
       </div>
+      {presets}
       <fieldset disabled={disabled} className="min-w-0">
         <legend className="sr-only">Edit wheel options</legend>
         <div className="title-field">
@@ -48,7 +50,7 @@ export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, o
       <p id="options-help" className="editor-help">
         Add between 2 and 20 options. Each has an equal chance.
       </p>
-      <button type="button" className="button button-secondary done-editing" onClick={onDone}>Done editing</button>
+      <button type="button" className="button button-primary save-wheel" onClick={onDone}>Save Wheel</button>
     </section>
   );
 }

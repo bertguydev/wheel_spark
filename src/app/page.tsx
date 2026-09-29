@@ -1,3 +1,4 @@
+import { ToolsNavigation } from "@/components/ToolsNavigation";
 import { WheelExperience } from "@/components/WheelExperience";
 import { SparkAccent } from "@/components/Brand";
 import type { Metadata } from "next";
@@ -30,7 +31,7 @@ export default function Home() {
       <header className="site-header">
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Full navigation restores the saved wheel when leaving a shared link. */}
         <a href="/" className="wordmark" aria-label="SparkyWheel home">Sparky<span>Wheel</span><SparkAccent className="ml-2 h-6 w-6 text-brand-coral" /></a>
-        <nav aria-label="Main"><a href="#options" className="header-link">Edit options</a></nav>
+        <ToolsNavigation />
       </header>
       <main id="main" className="mx-auto max-w-[1100px] px-4 pb-5 sm:px-8" tabIndex={-1}>
         <div className="hero">
@@ -57,6 +58,8 @@ export default function Home() {
           </section>
           <section aria-labelledby="wheel-ideas">
             <h2 id="wheel-ideas">Ways to use SparkyWheel</h2>
+            {/* Full navigation initializes the separate saved Food Wheel. */}
+            <p>Deciding what to eat? Try the <a className="header-link" href="/food-wheel">Food Wheel</a> with ready-to-spin meal ideas and food presets.</p>
             <p>Choose what to eat, pick a name, or decide between ideas with a group. A spin-the-wheel tool can also help you choose classroom activities, take turns in games, or pick a winner for a small giveaway. Add each choice once to give it the same chance as every other choice.</p>
           </section>
           <section aria-labelledby="wheel-faq">

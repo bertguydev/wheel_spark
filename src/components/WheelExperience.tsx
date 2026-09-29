@@ -7,6 +7,8 @@ import { WheelEditor } from "@/components/WheelEditor";
 import { SpinButton } from "@/components/SpinButton";
 import { ResultDisplay } from "@/components/ResultDisplay";
 import { ShareControls } from "@/components/ShareControls";
+import { WheelPresets } from "@/components/WheelPresets";
+import { HOME_TOOL, wheelFromPreset, type WheelPreset, type WheelTool } from "@/lib/wheel-tools";
 import { calculateRotation, selectWinnerIndex, MAX_OPTIONS, MIN_OPTIONS, type SpinAnimation, type WheelState } from "@/lib/wheel";
 import { adoptWheel, clearSharedWheelUrl, initializeWheel, persistWheelSession } from "@/lib/wheel-session";
 
@@ -14,21 +16,21 @@ const subscribeToHydration = () => () => {};
 const clientSnapshot = () => true;
 const serverSnapshot = () => false;
 
-export function WheelExperience() {
+export function WheelExperience({ tool = HOME_TOOL }: { tool?: WheelTool }) {
   const hydrated = useSyncExternalStore(subscribeToHydration, clientSnapshot, serverSnapshot);
   // The server and first client render agree. Only the working area waits for
   // browser storage; the surrounding page remains server-rendered.
   if (!hydrated) {
     return <div className="min-h-[570px]" aria-busy="true"><p role="status" className="status-message text-brand-muted">Loading your wheel…</p></div>;
   }
-  return <RestoredWheelExperience />;
+  return <RestoredWheelExperience key={tool.storageKey} tool={tool} />;
 }
 
-function RestoredWheelExperience() {
-  const [session, setSession] = useState(() => initializeWheel(window.location.href));
+function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
+  const [session, setSession] = useState(() => initializeWheel(window.location.href, tool));
   const { options, title } = session.wheel;
   const [shareRevision, setShareRevision] = useState(0);
-  useEffect(() => { persistWheelSession(session); }, [session]);
+  useEffect(() => { persistWheelSession(session, tool); }, [session, tool]);
   const [spin, setSpin] = useState<SpinAnimation | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -53,6 +55,17 @@ function RestoredWheelExperience() {
   function editTitle(value: string) {
     if (locked.current || value === title) return;
     changeWheel({ title: value, options });
+  }
+
+  function replaceWithPreset(preset: WheelPreset) {
+    if (locked.current) return;
+    const wheel = wheelFromPreset(preset);
+    nextId.current = wheel.options.length;
+    pendingWinner.current = null;
+    setSpin(null);
+    setResult(null);
+    setError(null);
+    changeWheel(wheel);
   }
 
   function navigateTo(area: HTMLElement | null) {
@@ -129,7 +142,7 @@ function RestoredWheelExperience() {
         </div>
         {error && <p role="alert" className="status-message status-warning mt-3">{error}</p>}
       </section>
-      <WheelEditor title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
+      <WheelEditor presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
     </div>
   );
 }
