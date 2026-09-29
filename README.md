@@ -2,6 +2,17 @@
 
 A free online random decision wheel. This client-side prototype includes an SVG decision wheel and an editor for 2–20 options. Spin to choose an equally likely option using browser cryptographic randomness. Editing is locked during the animation; reduced-motion preferences skip the rotation. Options and an optional wheel title are saved locally in your browser. Untitled wheels work as before.
 
+## GitHub repository and pushes
+
+- Repository: [bertguydev/wheel_spark](https://github.com/bertguydev/wheel_spark)
+- Git remote (`origin`): `https://github.com/bertguydev/wheel_spark.git`
+- Default branch: `main`
+- Production site: [SparkyWheel](https://sparkywheel.com/)
+
+This is the existing repository for ongoing SparkyWheel development and frequent pushes. Use it for future project updates rather than creating another repository. When asked to push, use `main` unless a different branch or pull request workflow is requested.
+
+Before committing, fetch the remote, review the diff, and preserve existing deployment configuration and unrelated changes. Stage only the intended files, run checks appropriate to the change, then commit and push without force. A successful GitHub push does not by itself verify a production deployment.
+
 ## Local wheel data
 
 The `sparkywheel:wheel` localStorage key stores `{ version: 2, title: string, options: string[] }`. Valid V1 records restore with an empty title and are saved as V2 after hydration, preserving option labels, order, and duplicates. Titles are trimmed when saved; blank titles remain optional. Missing V2 titles are treated as empty. Invalid data falls back to defaults, and storage restrictions do not prevent editing or spinning. Temporary invalid option edits retain the last usable saved wheel.
