@@ -2,9 +2,18 @@ import type { WheelState } from "./wheel.ts";
 
 export type WheelPreset = { id: string; name: string; title: string; labels: readonly string[] };
 export type WheelTool = {
+  modeControls?: boolean;
   storageKey: string;
   defaults: WheelPreset;
   presets?: readonly WheelPreset[];
+};
+
+const yesNo: WheelPreset = { id: "yes-no", name: "Yes / No", title: "", labels: ["Yes", "No"] };
+export const YES_NO_TOOL: WheelTool = {
+  storageKey: "sparkywheel:wheel:yes-or-no-wheel",
+  defaults: yesNo,
+  modeControls: true,
+  presets: [yesNo, { id: "yes-no-maybe", name: "Yes / No / Maybe", title: "", labels: ["Yes", "No", "Maybe"] }],
 };
 
 export const HOME_TOOL: WheelTool = {

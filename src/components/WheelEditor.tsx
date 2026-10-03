@@ -1,8 +1,9 @@
 import { useRef, type Ref, type ReactNode } from "react";
 import { MAX_OPTIONS, MIN_OPTIONS, type WheelOption } from "@/lib/wheel";
 
-export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, onAdd, onDelete, validationId, areaRef, onDone, presets }: {
+export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, onAdd, onDelete, validationId, areaRef, onDone, presets, titlePlaceholder = "What should we eat tonight?" }: {
   presets?: ReactNode;
+  titlePlaceholder?: string;
   title: string;
   onTitleChange: (title: string) => void;
   areaRef: Ref<HTMLElement>;
@@ -26,7 +27,7 @@ export function WheelEditor({ title, onTitleChange, options, disabled, onEdit, o
         <legend className="sr-only">Edit wheel options</legend>
         <div className="title-field">
           <label htmlFor="wheel-title" className="title-label">Wheel title <span>(optional)</span></label>
-          <input id="wheel-title" className="option-input" value={title} onChange={(event) => onTitleChange(event.target.value)} placeholder="What should we eat tonight?" />
+          <input id="wheel-title" className="option-input" value={title} onChange={(event) => onTitleChange(event.target.value)} placeholder={titlePlaceholder} />
         </div>
         <div className="space-y-2.5">
           {options.map((option, index) => (
