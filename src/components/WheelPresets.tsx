@@ -44,7 +44,7 @@ export function WheelPresets({ tool, wheel, disabled, onReplace }: {
         {tool.modeControls ? <div ref={modeButtons} className="preset-actions" aria-describedby={`${id}-help`}>
           {presets.map((preset) => <button key={preset.id} type="button" className="button button-secondary" aria-pressed={wheel.title === preset.title && wheel.options.length === preset.labels.length && wheel.options.every((option, index) => option.label === preset.labels[index])} onClick={() => requestReplacement(preset)}>{preset.name}</button>)}
         </div> : <>
-        <label htmlFor={id} className="sr-only">Meal preset</label>
+        <label htmlFor={id} className="sr-only">{tool.presetLabel ?? "Meal preset"}</label>
         <select ref={presetSelect} id={id} className="option-input" value={selected} aria-describedby={`${id}-help`} onChange={(event) => { setSelected(event.target.value); setPending(null); setNotice(""); }}>
           {presets.map((preset) => <option key={preset.id} value={preset.id}>{preset.name}</option>)}
         </select>

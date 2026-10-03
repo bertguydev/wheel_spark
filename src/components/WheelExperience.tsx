@@ -142,7 +142,7 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
         </div>
         {error && <p role="alert" className="status-message status-warning mt-3">{error}</p>}
       </section>
-      <WheelEditor titlePlaceholder={tool.modeControls ? "What should I decide?" : undefined} presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
+      <WheelEditor titlePlaceholder={tool.titlePlaceholder ?? (tool.modeControls ? "What should I decide?" : undefined)} presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
     </div>
   );
 }
