@@ -45,6 +45,21 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
   const pendingWinner = useRef<string | null>(null);
   const wheelArea = useRef<HTMLElement>(null);
   const editorArea = useRef<HTMLElement>(null);
+  const feedbackArea = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Match the existing single-column breakpoint. The browser computes the
+    // smallest scroll needed; no phone-specific offsets or viewport measurements.
+    if (!window.matchMedia("(max-width: 1023px)").matches) return;
+    const area = spinning
+      ? wheelArea.current?.querySelector(".wheel-container")
+      : result !== null ? feedbackArea.current?.querySelector(".status-wrap") : null;
+    area?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  }, [result, spinning]);
 
   function changeWheel(wheel: WheelState) {
     setSession(adoptWheel(wheel));
@@ -132,7 +147,7 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
         <Mascot state="default" />
         {title.trim() && <h2 className="wheel-title">{title.trim()}</h2>}
         <Wheel options={options} spin={spin} onFinish={finishSpin} />
-        <div className={`wheel-feedback${result !== null ? " has-result" : ""}`}>
+        <div ref={feedbackArea} className={`wheel-feedback${result !== null ? " has-result" : ""}`}>
           <ResultDisplay result={result} spinning={spinning} validationMessage={validationMessage} statusId={validationId} />
           <div className="spin-actions">
             <SpinButton hasResult={result !== null} spinning={spinning} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} onSpin={spinWheel} />

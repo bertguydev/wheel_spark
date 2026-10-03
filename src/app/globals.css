@@ -150,9 +150,18 @@ select:focus-visible { outline: 3px solid var(--slate); outline-offset: 4px; }
 .tools-links a { display: block; padding: .75rem; border-radius: .5rem; text-decoration: underline; text-underline-offset: 3px; }
 .tools-links a:hover, .tools-links a[aria-current="page"] { background: #f6e4d5; }
 .preset-panel select:hover:not(:disabled) { background: #ecd1bc; }
+@media (max-width: 1023px) {
+  .site-header { padding-block: .75rem; padding-inline: clamp(.5rem, 2vw, 1rem); flex-wrap: wrap; gap: .25rem; }
+  .wordmark { min-height: 44px; flex-shrink: 0; }
+  .header-navigation { position: relative; margin-left: auto; flex-wrap: nowrap; gap: .25rem; }
+  .header-edit { padding-inline: .5rem; white-space: nowrap; }
+  .tools-navigation { position: static; }
+  .tools-navigation summary { padding-inline: .25rem; min-width: 44px; }
+  .wheel-feedback.has-result .status-wrap { scroll-margin-block: 1rem; }
+}
 @media (max-width: 480px) {
-  .site-header { flex-wrap: wrap; gap: .5rem; }
-  .header-navigation { width: 100%; }
+  .wordmark { font-size: 1.25rem; }
+  .wordmark > svg { display: none; }
 }
 
 .yes-no-page .hero { margin: .5rem auto 1rem; }
