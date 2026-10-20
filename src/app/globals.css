@@ -170,6 +170,16 @@ select:focus-visible { outline: 3px solid var(--slate); outline-offset: 4px; }
 .yes-no-page .hero p { margin-top: .75rem; }
 .yes-no-page .wheel-container { max-width: 380px; }
 .yes-no-page .spin-actions { margin-top: 1rem; }
+.yes-no-page .wheel-feedback .status-wrap { order: 1; min-height: 180px; }
+.yes-no-page .spin-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.yes-no-page .spin-actions .button { min-width: 0; padding-inline: .65rem; }
+.yes-no-page .spin-actions .button-primary { font-size: .875rem; }
+.yes-no-page .quick-answer { min-height: 54px; }
+.yes-no-page .share-button { grid-column: 2; grid-row: 2; }
+.yes-no-page .share-status, .yes-no-page .manual-share { grid-column: 1 / -1; }
+@media (max-width: 360px) {
+  .yes-no-page .spin-actions .button-primary { font-size: .8rem; gap: .25rem; padding-inline: .35rem; white-space: nowrap; }
+}
 .yes-no-page .preset-actions [aria-pressed="true"] { border-color: var(--action); box-shadow: inset 0 0 0 1px var(--action); }
 @media (max-width: 767px) {
   .yes-no-page .wheel-container { max-width: 300px; }

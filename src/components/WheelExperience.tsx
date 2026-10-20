@@ -8,7 +8,7 @@ import { SpinButton } from "@/components/SpinButton";
 import { ResultDisplay } from "@/components/ResultDisplay";
 import { ShareControls } from "@/components/ShareControls";
 import { WheelPresets } from "@/components/WheelPresets";
-import { HOME_TOOL, wheelFromPreset, type WheelPreset, type WheelTool } from "@/lib/wheel-tools";
+import { HOME_TOOL, YES_NO_TOOL, wheelFromPreset, type WheelPreset, type WheelTool } from "@/lib/wheel-tools";
 import { calculateRotation, selectWinnerIndex, MAX_OPTIONS, MIN_OPTIONS, type SpinAnimation, type WheelState } from "@/lib/wheel";
 import { adoptWheel, clearSharedWheelUrl, initializeWheel, persistWheelSession } from "@/lib/wheel-session";
 
@@ -27,6 +27,8 @@ export function WheelExperience({ tool = HOME_TOOL }: { tool?: WheelTool }) {
 }
 
 function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
+  const quickAnswerEnabled = tool.storageKey === YES_NO_TOOL.storageKey;
+  const [answerSequence, setAnswerSequence] = useState(0);
   const [session, setSession] = useState(() => initializeWheel(window.location.href, tool));
   const { options, title } = session.wheel;
   const [shareRevision, setShareRevision] = useState(0);
@@ -96,19 +98,26 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
 
   const finishSpin = useCallback(() => {
     setResult(pendingWinner.current);
+    setAnswerSequence((sequence) => sequence + 1);
     setSpinning(false);
     locked.current = false;
   }, []);
 
-  function spinWheel() {
+  function chooseAnswer(quick = false) {
     if (locked.current || hasBlank) return;
     locked.current = true;
     try {
       const winner = selectWinnerIndex(options.length);
       const from = spin?.to ?? 0;
       pendingWinner.current = options[winner].label.trim();
-      setResult(null);
       setError(null);
+      if (quick) {
+        setResult(pendingWinner.current);
+        setAnswerSequence((sequence) => sequence + 1);
+        locked.current = false;
+        return;
+      }
+      setResult(null);
       setSpinning(true);
       setSpin({
         from,
@@ -148,9 +157,10 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
         {title.trim() && <h2 className="wheel-title">{title.trim()}</h2>}
         <Wheel options={options} spin={spin} onFinish={finishSpin} />
         <div ref={feedbackArea} className={`wheel-feedback${result !== null ? " has-result" : ""}`}>
-          <ResultDisplay result={result} spinning={spinning} validationMessage={validationMessage} statusId={validationId} />
+          <ResultDisplay result={result} spinning={spinning} validationMessage={validationMessage} statusId={validationId} answerSequence={quickAnswerEnabled ? answerSequence : undefined} />
           <div className="spin-actions">
-            <SpinButton hasResult={result !== null} spinning={spinning} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} onSpin={spinWheel} />
+            <SpinButton hasResult={result !== null} spinning={spinning} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} onSpin={() => chooseAnswer()} />
+            {quickAnswerEnabled && <button className="button button-secondary quick-answer" type="button" disabled={spinning || hasBlank} aria-describedby={hasBlank ? validationId : undefined} onClick={() => chooseAnswer(true)}>Quick Answer</button>}
             {result !== null && <button className="button button-secondary" type="button" onClick={() => navigateTo(editorArea.current)}>Edit options</button>}
             <ShareControls key={shareRevision} wheel={session.wheel} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} />
           </div>

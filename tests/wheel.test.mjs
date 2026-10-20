@@ -45,3 +45,24 @@ test("invalid option counts are rejected", () => {
     assert.throws(() => selectWinnerIndex(count), RangeError);
   }
 });
+
+test("Yes/No and Maybe map equal-sized sample groups to each answer", (context) => {
+  let sample = 0;
+  context.mock.method(globalThis.crypto, "getRandomValues", (buffer) => {
+    buffer[0] = sample;
+    return buffer;
+  });
+  for (const count of [2, 3]) {
+    const totals = Array(count).fill(0);
+    for (sample = 0; sample < count * 1000; sample++) totals[selectWinnerIndex(count)]++;
+    assert.deepEqual(totals, Array(count).fill(1000));
+  }
+  // Three choices must reject UINT32_MAX rather than give index zero an extra sample.
+  const samples = [0xffffffff, 2];
+  context.mock.method(globalThis.crypto, "getRandomValues", (buffer) => {
+    buffer[0] = samples.shift();
+    return buffer;
+  });
+  assert.equal(selectWinnerIndex(3), 2);
+  assert.equal(samples.length, 0);
+});
