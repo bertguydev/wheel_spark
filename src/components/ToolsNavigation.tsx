@@ -9,7 +9,7 @@ export function ToolsNavigation({ food = false, yesNo = false, drawing = false }
           <a href="/drawing-ideas-wheel" aria-current={drawing ? "page" : undefined}>Drawing Ideas Wheel</a>
         </div>
       </details>
-      <a href="#options" className="button button-secondary header-edit">Edit options</a>
+      {!yesNo && <a href="#options" className="button button-secondary header-edit">Edit options</a>}
     </nav>
   );
 }

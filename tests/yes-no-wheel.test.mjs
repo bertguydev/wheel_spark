@@ -77,10 +77,10 @@ test("invalid data and denied storage retain Yes/No defaults", context => {
 // Run against a built, running preview: SPARKYWHEEL_TEST_URL=http://localhost:3000 npm test
 import { readFile } from "node:fs/promises";
 
-test("Yes/No uses the shared experience and both tools remain linked", async () => {
+test("fixed Yes/No uses its dedicated experience and retains tool navigation", async () => {
   const page = await readFile(new URL("../src/app/yes-or-no-wheel/page.tsx", import.meta.url), "utf8");
   const navigation = await readFile(new URL("../src/components/ToolsNavigation.tsx", import.meta.url), "utf8");
-  assert.match(page, /<WheelExperience tool=\{YES_NO_TOOL\}/);
+  assert.match(page, /<YesNoExperience classroom=/);
   assert.match(navigation, /href="\/yes-or-no-wheel"/);
   assert.match(navigation, /href="\/food-wheel"/);
 });
@@ -99,6 +99,10 @@ test("production HTML has crawlable content, metadata, canonical and tool links"
       assert.match(html, /<meta name="description" content="Can&#x27;t decide\? Spin the SparkyWheel Yes or No Wheel/);
       assert.match(html, /name="twitter:card" content="summary"/);
       assert.match(html, /id="yes-no-random"/);
+      assert.match(html, /A Quick Classroom Decision Helper/);
+      assert.match(html, /Ready when/);
+      assert.match(html, /Share This Wheel/);
+      assert.doesNotMatch(html, /href="#options"|Choose your answers|Yes \/ No \/ Maybe|Your options/);
     }
   }
 });

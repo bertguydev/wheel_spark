@@ -3,10 +3,11 @@ import type { WheelState } from "@/lib/wheel";
 import { createShareUrl } from "@/lib/wheel-sharing";
 import { copyWheelLink, shareWheelLink } from "@/lib/share-actions";
 
-export function ShareControls({ wheel, disabled, describedBy }: {
+export function ShareControls({ wheel, disabled, describedBy, label = "Share" }: {
   wheel: WheelState;
   disabled: boolean;
   describedBy?: string;
+  label?: string;
 }) {
   const [message, setMessage] = useState("");
   const [manualUrl, setManualUrl] = useState("");
@@ -58,7 +59,7 @@ export function ShareControls({ wheel, disabled, describedBy }: {
   return (
     <div className="share-controls">
       <button className="button button-secondary share-button" type="button" disabled={disabled || busy} aria-describedby={describedBy ?? statusId} onClick={() => void share()}>
-        {busy ? "Sharing…" : "Share"}
+        {busy ? "Sharing…" : label}
       </button>
       <p id={statusId} role="status" aria-live="polite" aria-atomic="true" className="share-status">{message}</p>
       {manualUrl && <div className="manual-share">
