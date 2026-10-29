@@ -58,9 +58,25 @@ export default function Home() {
           </section>
           <section aria-labelledby="wheel-ideas">
             <h2 id="wheel-ideas">Ways to use SparkyWheel</h2>
-            {/* Full navigation initializes the separate saved Food Wheel. */}
-            <p>Deciding what to eat? Try the <a className="header-link" href="/food-wheel">Food Wheel</a> with ready-to-spin meal ideas and food presets.</p>
             <p>Choose what to eat, pick a name, or decide between ideas with a group. A spin-the-wheel tool can also help you choose classroom activities, take turns in games, or pick a winner for a small giveaway. Add each choice once to give it the same chance as every other choice.</p>
+          </section>
+          <section aria-labelledby="explore-wheels">
+            <h2 id="explore-wheels">Explore More Wheels</h2>
+            {/* Full navigation restores each destination tool's saved session. */}
+            <div className="explore-wheels">
+              <a className="wheel-card" href="/food-wheel">
+                <h3>Food Wheel</h3>
+                <p>Can&apos;t decide what to eat? Spin for a meal or takeout idea!</p>
+              </a>
+              <a className="wheel-card" href="/yes-or-no-wheel">
+                <h3>Yes or No Wheel</h3>
+                <p>Have a question? Let the wheel give you a quick yes or no!</p>
+              </a>
+              <a className="wheel-card" href="/drawing-ideas-wheel">
+                <h3>Drawing Ideas Wheel</h3>
+                <p>Need inspiration? Spin for a fun drawing prompt!</p>
+              </a>
+            </div>
           </section>
           <section aria-labelledby="wheel-faq">
             <h2 id="wheel-faq">Frequently asked questions</h2>

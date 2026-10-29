@@ -116,6 +116,14 @@ button, a, input { -webkit-tap-highlight-color: transparent; }
 .home-guide ol { list-style: decimal; padding-left: 1.5rem; }
 .home-guide li + li { margin-top: .35rem; }
 .home-guide p + p, .home-guide ol + p { margin-top: .75rem; }
+.explore-wheels { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; }
+.wheel-card { display: block; min-width: 0; padding: 1rem; border: 1px solid var(--line); border-radius: var(--radius-input); background: var(--surface); box-shadow: var(--shadow-soft); text-decoration: none; transition: border-color .15s, background-color .15s; }
+.home-guide .wheel-card h3 { margin: 0 0 .4rem; color: var(--action); font-size: 1rem; text-decoration: underline; text-underline-offset: 3px; }
+.home-guide .wheel-card p { font-size: .85rem; line-height: 1.65; }
+.wheel-card:focus-visible { outline: 3px solid var(--slate); outline-offset: 4px; }
+@media (min-width: 768px) { .explore-wheels { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (hover: hover) { .wheel-card:hover { border-color: var(--action); background: var(--cream); } }
+@media (prefers-reduced-motion: reduce) { .wheel-card { transition: none; } }
 .food-hero h1 { font-size: clamp(1.9rem, 4vw, 3rem); }
 .preset-panel { margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--line); }
 .preset-panel legend { font-size: .875rem; font-weight: 600; }

@@ -83,6 +83,7 @@ export default function YesOrNoWheelPage() {
             <h2 id="yes-no-general">More choices?</h2>
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Reload the destination's saved wheel. */}
             <p>Open the <a className="header-link" href="/">general SparkyWheel random picker</a> for your next decision.</p>
+            <p>Decided to order food? Use the <a className="header-link" href="/food-wheel">Food Wheel</a> to choose a meal or cuisine.</p>
           </section>
         </div>
       </main>

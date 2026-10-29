@@ -53,6 +53,7 @@ export default function FoodWheelPage() {
           <section aria-labelledby="food-customize">
             <h2 id="food-customize">Make it your own</h2>
             <p>Replace the defaults with favorite meals, cuisines, household favorites, or takeout and restaurant choices you already have in mind. The wheel chooses from your list; it does not find nearby restaurants. Remove anything that doesn&apos;t suit your preferences or dietary needs before spinning.</p>
+            <p>Only deciding whether to order takeout? Try the <a className="header-link" href="/yes-or-no-wheel">Yes or No Wheel</a>.</p>
           </section>
           <section aria-labelledby="food-faq">
             <h2 id="food-faq">Food Wheel questions</h2>
