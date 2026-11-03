@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { SparkAccent } from "@/components/Brand";
-import { ToolsNavigation } from "@/components/ToolsNavigation";
+import { SiteHeader } from "@/components/SiteHeader";
 import { WheelExperience } from "@/components/WheelExperience";
 import { DRAWING_TOOL } from "@/lib/wheel-tools";
 
@@ -22,11 +21,7 @@ export default function DrawingIdeasWheelPage() {
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:z-20 focus:bg-white focus:p-3">Skip to wheel</a>
       <div aria-hidden="true" className="edge-shape edge-shape-left" />
       <div aria-hidden="true" className="edge-shape edge-shape-right" />
-      <header className="site-header">
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Full navigation restores the destination tool's saved session. */}
-        <a href="/" className="wordmark" aria-label="SparkyWheel home">Sparky<span>Wheel</span><SparkAccent className="ml-2 h-6 w-6 text-brand-coral" /></a>
-        <ToolsNavigation drawing />
-      </header>
+      <SiteHeader tool="drawing" />
       <main id="main" className="mx-auto max-w-[1100px] px-4 pb-5 sm:px-8" tabIndex={-1}>
         <div className="hero food-hero">
           <h1>What Should I Draw? <span>Spin the Drawing Ideas Wheel</span></h1>
