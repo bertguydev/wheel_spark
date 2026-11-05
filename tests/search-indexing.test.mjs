@@ -8,9 +8,10 @@ const urls = [
   "https://sparkywheel.com/food-wheel",
   "https://sparkywheel.com/yes-or-no-wheel",
   "https://sparkywheel.com/drawing-ideas-wheel",
+  "https://sparkywheel.com/privacy-policy",
 ];
 
-test("sitemap lists exactly the public canonical tool URLs", () => {
+test("sitemap lists exactly the public canonical page URLs", () => {
   assert.deepEqual(sitemap().map(entry => entry.url), urls);
 });
 
@@ -49,5 +50,13 @@ test("built indexing endpoints serialize correctly and every listed page is inde
     // Next serializes the origin-only canonical without a trailing slash.
     assert.equal(new URL(canonical[1]).href, url);
     assert.match(html, /<meta name="robots" content="index, follow"/);
+    assert.match(html, /<footer\b[^>]*>[\s\S]*?<a\b[^>]*href="\/privacy-policy"[^>]*>Privacy Policy<\/a>[\s\S]*?<\/footer>/);
+    if (new URL(url).pathname === "/privacy-policy") {
+      assert.match(html, /<title>Privacy Policy \| SparkyWheel<\/title>/);
+      assert.match(html, /<meta name="description" content="How SparkyWheel handles/);
+      assert.match(html, /href="mailto:privacy@sparkywheel.com"/);
+      assert.match(html, /<time dateTime="2026-11-05">November 5, 2026<\/time>/);
+      assert.doesNotMatch(html, /Draft for owner review|aol\.com|Zaraz/);
+    }
   }
 });

@@ -1,4 +1,5 @@
 import { Poppins } from "next/font/google";
+import { SiteFooter } from "@/components/SiteFooter";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/app/globals.css";
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={poppins.variable}>
-      <body>{children}</body>
+      <body>{children}<SiteFooter /></body>
     </html>
   );
 }
