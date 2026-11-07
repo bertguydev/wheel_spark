@@ -25,7 +25,7 @@ export default function DrawingIdeasWheelPage() {
       <main id="main" className="mx-auto max-w-[1100px] px-4 pb-5 sm:px-8" tabIndex={-1}>
         <div className="hero food-hero">
           <h1>What Should I Draw? <span>Spin the Drawing Ideas Wheel</span></h1>
-          <p>Need some inspiration? Spin the wheel for a random drawing idea, or choose a prompt collection to match your mood.</p>
+          <p>Spin for a drawing challenge you can try on your own or share with the class. Age and activity time are optional.</p>
         </div>
         <WheelExperience tool={DRAWING_TOOL} />
         <div className="home-guide">
@@ -43,7 +43,7 @@ export default function DrawingIdeasWheelPage() {
             <ol>
               <li>Spin the default wheel or choose a prompt set.</li>
               <li>Let SparkyWheel choose an idea.</li>
-              <li>Draw your interpretation.</li>
+              <li>Follow the drawing directions or open Classroom display to show the challenge to your class.</li>
               <li>Spin again for another prompt.</li>
               <li>Customize the wheel with your own ideas if you like.</li>
             </ol>

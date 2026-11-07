@@ -1,0 +1,61 @@
+.settings {
+  margin: .75rem auto 0;
+  padding: .75rem 1rem 1rem;
+  width: 100%;
+  max-width: 30rem;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  background: var(--surface);
+}
+
+.settings legend { padding-inline: .4rem; font-size: .875rem; font-weight: 600; }
+.fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+.fields label { display: grid; gap: .3rem; font-size: .8rem; font-weight: 500; }
+.fields select { font-size: .875rem; font-weight: 400; }
+.settings p { margin-top: .65rem; color: var(--muted); font-size: .75rem; }
+@media (min-width: 480px) {
+  .fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); }
+}
+
+.details { display: grid; gap: .6em; margin-top: .85em; }
+.instructions, .timeTip { line-height: 1.5; }
+.duration { font-size: .85em; font-weight: 600; color: var(--ready-ink); }
+.timeTip { font-size: .9em; }
+
+.display {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  background: var(--cream);
+  color: var(--slate);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.display[open] { display: grid; }
+.displayHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: .5rem 1rem;
+  padding: .75rem clamp(1rem, 4vw, 3rem);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.displayContent {
+  display: flex;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.25rem, 5vw, 4rem);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.displayContent:focus-visible { outline: 3px solid var(--slate); outline-offset: -4px; }
+.displayCard { width: min(100%, 68rem); margin: auto; font-size: clamp(1.125rem, 3vw, 2.5rem); }
+.displayCard h2 { font-size: clamp(2rem, 7vw, 6rem); font-weight: 700; line-height: 1.1; letter-spacing: -.035em; }

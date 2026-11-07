@@ -1,28 +1,31 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { needsPresetConfirmation } from "@/lib/preset-confirmation";
+import { findActivePreset } from "@/lib/preset-confirmation";
 import type { WheelState } from "@/lib/wheel";
 import type { WheelPreset, WheelTool } from "@/lib/wheel-tools";
 
-export function WheelPresets({ tool, wheel, disabled, onReplace }: {
+export function WheelPresets({ tool, wheel, disabled, onReplace, showActiveCollection = false }: {
   tool: WheelTool;
   wheel: WheelState;
   disabled: boolean;
   onReplace: (preset: WheelPreset) => void;
+  showActiveCollection?: boolean;
 }) {
   const id = useId();
   const presetSelect = useRef<HTMLSelectElement>(null);
   const modeButtons = useRef<HTMLDivElement>(null);
-  const [selected, setSelected] = useState(tool.defaults.id);
+  const [selection, setSelection] = useState<string | null>(null);
   const [pending, setPending] = useState<WheelPreset | null>(null);
   const [notice, setNotice] = useState("");
   const presets = tool.presets ?? [];
+  const active = findActivePreset(wheel, tool);
+  const selected = selection ?? (showActiveCollection ? active?.id ?? "" : tool.defaults.id);
 
   function apply(preset: WheelPreset) {
     if (disabled) return;
     onReplace(preset);
-    setSelected(preset.id);
+    setSelection(showActiveCollection ? null : preset.id);
     setNotice(`${preset.name} loaded. Your wheel is ready to edit or spin.`);
     setPending(null);
     if (tool.modeControls) modeButtons.current?.querySelector<HTMLButtonElement>("button")?.focus();
@@ -32,24 +35,26 @@ export function WheelPresets({ tool, wheel, disabled, onReplace }: {
   function requestReplacement(preset: WheelPreset) {
     if (disabled) return;
     setNotice("");
-    if (needsPresetConfirmation(wheel, tool)) setPending(preset);
+    if (!active) setPending(preset);
     else apply(preset);
   }
 
   return (
     <div className="preset-panel">
       <fieldset disabled={disabled}>
-        <legend>{tool.modeControls ? "Choose your answers" : "Start with a preset"}</legend>
+        <legend>{showActiveCollection ? "Drawing collections" : tool.modeControls ? "Choose your answers" : "Start with a preset"}</legend>
+        {showActiveCollection && <p className="mt-2 text-sm">Active collection: <strong>{active?.name ?? "Custom"}</strong></p>}
         <p id={`${id}-help`} className="editor-help">{tool.modeControls ? "Yes / No gives each answer a 50% chance. Add Maybe for three equally likely answers (one third each). Switching replaces the title and choices for this page." : "Presets and Restore defaults replace this wheel's title and all choices. Your general wheel stays separate."}</p>
         {tool.modeControls ? <div ref={modeButtons} className="preset-actions" aria-describedby={`${id}-help`}>
           {presets.map((preset) => <button key={preset.id} type="button" className="button button-secondary" aria-pressed={wheel.title === preset.title && wheel.options.length === preset.labels.length && wheel.options.every((option, index) => option.label === preset.labels[index])} onClick={() => requestReplacement(preset)}>{preset.name}</button>)}
         </div> : <>
-        <label htmlFor={id} className="sr-only">{tool.presetLabel ?? "Meal preset"}</label>
-        <select ref={presetSelect} id={id} className="option-input" value={selected} aria-describedby={`${id}-help`} onChange={(event) => { setSelected(event.target.value); setPending(null); setNotice(""); }}>
+        <label htmlFor={id} className={showActiveCollection ? "mt-3 block text-sm font-medium" : "sr-only"}>{showActiveCollection ? "Collection to load" : tool.presetLabel ?? "Meal preset"}</label>
+        <select ref={presetSelect} id={id} className="option-input" value={selected} aria-describedby={`${id}-help`} onChange={(event) => { setSelection(event.target.value); setPending(null); setNotice(""); }}>
+          {showActiveCollection && <option value="" disabled>Choose a collection</option>}
           {presets.map((preset) => <option key={preset.id} value={preset.id}>{preset.name}</option>)}
         </select>
         <div className="preset-actions">
-          <button type="button" className="button button-secondary" onClick={() => { requestReplacement(presets.find((preset) => preset.id === selected) ?? tool.defaults); }}>Use preset</button>
+          <button type="button" className="button button-secondary" disabled={!selected} onClick={() => { requestReplacement(presets.find((preset) => preset.id === selected) ?? tool.defaults); }}>Use preset</button>
           <button type="button" className="button button-secondary" onClick={() => { requestReplacement(tool.defaults); }}>Restore defaults</button>
         </div>
         </>}

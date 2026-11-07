@@ -8,7 +8,9 @@ import { SpinButton } from "@/components/SpinButton";
 import { ResultDisplay } from "@/components/ResultDisplay";
 import { ShareControls } from "@/components/ShareControls";
 import { WheelPresets } from "@/components/WheelPresets";
-import { HOME_TOOL, YES_NO_TOOL, wheelFromPreset, type WheelPreset, type WheelTool } from "@/lib/wheel-tools";
+import { DrawingChallengeDetails, DrawingClassroomDisplay, DrawingClassroomSettings } from "@/components/DrawingClassroom";
+import { DEFAULT_DRAWING_SETTINGS, getDrawingChallenge } from "@/lib/drawing-challenges";
+import { DRAWING_TOOL, HOME_TOOL, YES_NO_TOOL, wheelFromPreset, type WheelPreset, type WheelTool } from "@/lib/wheel-tools";
 import { calculateRotation, selectWinnerIndex, MAX_OPTIONS, MIN_OPTIONS, type SpinAnimation, type WheelState } from "@/lib/wheel";
 import { adoptWheel, clearSharedWheelUrl, initializeWheel, persistWheelSession } from "@/lib/wheel-session";
 
@@ -28,6 +30,8 @@ export function WheelExperience({ tool = HOME_TOOL }: { tool?: WheelTool }) {
 
 function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
   const quickAnswerEnabled = tool.storageKey === YES_NO_TOOL.storageKey;
+  const isDrawing = tool.storageKey === DRAWING_TOOL.storageKey;
+  const [drawingSettings, setDrawingSettings] = useState(DEFAULT_DRAWING_SETTINGS);
   const [answerSequence, setAnswerSequence] = useState(0);
   const [session, setSession] = useState(() => initializeWheel(window.location.href, tool));
   const { options, title } = session.wheel;
@@ -36,6 +40,7 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
   const [spin, setSpin] = useState<SpinAnimation | null>(null);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const challenge = isDrawing && result !== null ? getDrawingChallenge(result, drawingSettings) : null;
   const [error, setError] = useState<string | null>(null);
   const validationId = useId();
   const hasBlank = options.some((option) => !option.label.trim());
@@ -157,17 +162,19 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
         {title.trim() && <h2 className="wheel-title">{title.trim()}</h2>}
         <Wheel options={options} spin={spin} onFinish={finishSpin} />
         <div ref={feedbackArea} className={`wheel-feedback${result !== null ? " has-result" : ""}`}>
-          <ResultDisplay result={result} spinning={spinning} validationMessage={validationMessage} statusId={validationId} answerSequence={quickAnswerEnabled ? answerSequence : undefined} />
+          <ResultDisplay result={result} spinning={spinning} validationMessage={validationMessage} statusId={validationId} answerSequence={quickAnswerEnabled ? answerSequence : undefined} resultDetails={challenge && <DrawingChallengeDetails challenge={challenge} />} />
           <div className="spin-actions">
             <SpinButton hasResult={result !== null} spinning={spinning} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} onSpin={() => chooseAnswer()} />
             {quickAnswerEnabled && <button className="button button-secondary quick-answer" type="button" disabled={spinning || hasBlank} aria-describedby={hasBlank ? validationId : undefined} onClick={() => chooseAnswer(true)}>Quick Answer</button>}
+            {challenge && result !== null && <DrawingClassroomDisplay prompt={result} challenge={challenge} />}
             {result !== null && <button className="button button-secondary" type="button" onClick={() => navigateTo(editorArea.current)}>Edit options</button>}
             <ShareControls key={shareRevision} wheel={session.wheel} disabled={spinning || hasBlank} describedBy={hasBlank ? validationId : undefined} />
           </div>
         </div>
+        {isDrawing && <DrawingClassroomSettings settings={drawingSettings} onChange={setDrawingSettings} />}
         {error && <p role="alert" className="status-message status-warning mt-3">{error}</p>}
       </section>
-      <WheelEditor titlePlaceholder={tool.titlePlaceholder ?? (tool.modeControls ? "What should I decide?" : undefined)} presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
+      <WheelEditor titlePlaceholder={tool.titlePlaceholder ?? (tool.modeControls ? "What should I decide?" : undefined)} presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} showActiveCollection={isDrawing} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
     </div>
   );
 }

@@ -1,12 +1,14 @@
 import { SparkAccent, StatusIcon } from "@/components/Brand";
 import { Mascot } from "@/components/Mascot";
+import type { ReactNode } from "react";
 
-export function ResultDisplay({ result, spinning, validationMessage, statusId, answerSequence }: {
+export function ResultDisplay({ result, spinning, validationMessage, statusId, answerSequence, resultDetails }: {
   result: string | null;
   spinning: boolean;
   validationMessage: string | null;
   statusId: string;
   answerSequence?: number;
+  resultDetails?: ReactNode;
 }) {
   return (
     <div id={statusId} role="status" aria-live="polite" aria-atomic="true" className="status-wrap">
@@ -17,6 +19,7 @@ export function ResultDisplay({ result, spinning, validationMessage, statusId, a
           <SparkAccent className="result-sparks h-7 w-7" />
           <p className="result-label">Sparky picked...</p>
           <p className="result-winner">{result}</p>
+          {resultDetails}
         </div>
       ) : <p className="status-message status-ready"><StatusIcon />Ready when you are!</p>}
     </div>

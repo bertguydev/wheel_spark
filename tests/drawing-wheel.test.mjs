@@ -4,7 +4,8 @@ import { HOME_TOOL, FOOD_TOOL, YES_NO_TOOL, DRAWING_TOOL, wheelFromPreset } from
 import { loadWheel, saveWheel } from "../src/lib/wheel-storage.ts";
 import { initializeWheel, adoptWheel, persistWheelSession, clearSharedWheelUrl } from "../src/lib/wheel-session.ts";
 import { createShareUrl } from "../src/lib/wheel-sharing.ts";
-import { needsPresetConfirmation } from "../src/lib/preset-confirmation.ts";
+import { findActivePreset, needsPresetConfirmation } from "../src/lib/preset-confirmation.ts";
+import { DEFAULT_DRAWING_SETTINGS, DRAWING_AGES, DRAWING_DURATIONS, getDrawingChallenge } from "../src/lib/drawing-challenges.ts";
 import { validLabels } from "../src/lib/wheel.ts";
 import { readFile } from "node:fs/promises";
 
@@ -75,6 +76,47 @@ test("custom prompts and titles persist with four-way isolation and replacement 
   assertOtherSaves(values, before);
   for (const tool of otherTools) saveWheel(wheelFromPreset(tool.defaults).options, "Changed elsewhere", tool);
   assert.deepEqual(loadWheel(DRAWING_TOOL), wheel);
+});
+
+test("the active collection is recognized from a restored wheel; order and title changes make it Custom", context => {
+  const values = browser(context);
+  const imagination = DRAWING_TOOL.presets[3];
+  values.set(DRAWING_TOOL.storageKey, JSON.stringify({ version: 1, options: imagination.labels }));
+  const { wheel } = initializeWheel(window.location.href, DRAWING_TOOL);
+  assert.equal(findActivePreset(wheel, DRAWING_TOOL)?.id, imagination.id);
+  assert.equal(findActivePreset({ ...wheel, title: "Our imagination wheel" }, DRAWING_TOOL), undefined);
+  assert.equal(findActivePreset({ ...wheel, options: [...wheel.options].reverse() }, DRAWING_TOOL), undefined);
+});
+
+test("all 50 built-in prompts have distinct directions for each age, with time guidance kept separate", () => {
+  const prompts = new Set(DRAWING_TOOL.presets.flatMap(preset => preset.labels));
+  assert.equal(prompts.size, 50);
+  for (const prompt of prompts) {
+    const instructions = new Set();
+    for (const age of DRAWING_AGES) {
+      const standard = getDrawingChallenge(prompt, { age, minutes: 5 });
+      assert.notEqual(standard.instructions, getDrawingChallenge("A new custom prompt", { age, minutes: 5 }).instructions, `${prompt}: ${age}`);
+      instructions.add(standard.instructions);
+      const tips = new Set();
+      for (const { minutes } of DRAWING_DURATIONS) {
+        const challenge = getDrawingChallenge(prompt, { age, minutes });
+        assert.equal(challenge.duration.minutes, minutes);
+        assert.equal(challenge.instructions, standard.instructions);
+        tips.add(challenge.timeTip);
+      }
+      assert.equal(tips.size, 3);
+    }
+    assert.equal(instructions.size, 3, prompt);
+  }
+  assert.deepEqual(getDrawingChallenge("Bicycle", DEFAULT_DRAWING_SETTINGS).duration, { minutes: 5, name: "Creative challenge" });
+});
+
+test("custom and legacy labels, including object-property names, get usable directions at every age", () => {
+  for (const prompt of ["A jam jar that holds a thunderstorm", "constructor", "__proto__"]) {
+    const challenges = DRAWING_AGES.map(age => getDrawingChallenge(prompt, { age, minutes: 3 }));
+    assert.equal(new Set(challenges.map(challenge => challenge.instructions)).size, 3);
+    assert.ok(challenges.every(challenge => /^(Draw|Choose)/.test(challenge.instructions) && challenge.timeTip.length > 0));
+  }
 });
 
 test("Drawing share retains route and full prompts; viewing never writes, adoption only saves Drawing", context => {
