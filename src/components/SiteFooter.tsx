@@ -15,7 +15,10 @@ export function SiteFooter() {
         </Link>
         <p>Making everyday decisions a little more fun.</p>
       </div>
-      <nav aria-label="Footer">{links.map(({ href, label }) => <Link key={href} href={href}>{label}</Link>)}</nav>
+      <nav aria-label="Footer">
+        {links.map(({ href, label }) => <Link key={href} href={href}>{label}</Link>)}
+        <a href="mailto:hello@sparkywheel.com">Contact</a>
+      </nav>
       <small>© {new Date().getFullYear()} SparkyWheel</small>
     </div>
   </footer>;
