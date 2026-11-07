@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: "https://sparkywheel.com/food-wheel" },
     { url: "https://sparkywheel.com/yes-or-no-wheel" },
     { url: "https://sparkywheel.com/drawing-ideas-wheel" },
+    { url: "https://sparkywheel.com/about" },
     { url: "https://sparkywheel.com/privacy-policy" },
   ];
 }

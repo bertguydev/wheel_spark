@@ -1,7 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const links = [{ href: "/privacy-policy", label: "Privacy Policy" }];
+const links = [
+  { href: "/about", label: "About" },
+  { href: "/privacy-policy", label: "Privacy Policy" },
+];
 
 export function SiteFooter() {
   return <footer className="site-footer" aria-label="Site footer">

@@ -8,6 +8,7 @@ const urls = [
   "https://sparkywheel.com/food-wheel",
   "https://sparkywheel.com/yes-or-no-wheel",
   "https://sparkywheel.com/drawing-ideas-wheel",
+  "https://sparkywheel.com/about",
   "https://sparkywheel.com/privacy-policy",
 ];
 
@@ -51,6 +52,15 @@ test("built indexing endpoints serialize correctly and every listed page is inde
     assert.equal(new URL(canonical[1]).href, url);
     assert.match(html, /<meta name="robots" content="index, follow"/);
     assert.match(html, /<footer\b[^>]*>[\s\S]*?<a\b[^>]*href="\/privacy-policy"[^>]*>Privacy Policy<\/a>[\s\S]*?<\/footer>/);
+    assert.match(html, /<footer\b[^>]*>[\s\S]*?<a\b[^>]*href="\/about"[^>]*>About<\/a>[\s\S]*?<\/footer>/);
+    if (new URL(url).pathname === "/about") {
+      assert.match(html, /<title>About SparkyWheel \| Free Decision Wheels<\/title>/);
+      assert.match(html, /<meta name="description" content="Meet SparkyWheel, a free browser-based tool for everyday decisions\. Discover our story and create, spin, and share wheels without signing up\."/);
+      assert.match(html, /<h1[^>]*>About SparkyWheel<\/h1>/);
+      for (const [path, label] of [["/food-wheel", "Food Wheel"], ["/yes-or-no-wheel", "Yes or No Wheel"], ["/", "Spin the wheel"]]) {
+        assert.ok(html.match(/<a\b[^>]*>[^<]*<\/a>/g)?.some(link => link.includes(`href="${path}"`) && link.endsWith(`>${label}</a>`)), label);
+      }
+    }
     if (new URL(url).pathname === "/privacy-policy") {
       assert.match(html, /<title>Privacy Policy \| SparkyWheel<\/title>/);
       assert.match(html, /<meta name="description" content="How SparkyWheel handles/);
