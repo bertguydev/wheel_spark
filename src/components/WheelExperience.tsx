@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useId, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Mascot } from "@/components/Mascot";
 import { Wheel } from "@/components/Wheel";
 import { WheelEditor } from "@/components/WheelEditor";
@@ -18,17 +18,18 @@ const subscribeToHydration = () => () => {};
 const clientSnapshot = () => true;
 const serverSnapshot = () => false;
 
-export function WheelExperience({ tool = HOME_TOOL }: { tool?: WheelTool }) {
+export function WheelExperience({ tool = HOME_TOOL, drawingResource }: { tool?: WheelTool; drawingResource?: ReactNode }) {
   const hydrated = useSyncExternalStore(subscribeToHydration, clientSnapshot, serverSnapshot);
   // The server and first client render agree. Only the working area waits for
   // browser storage; the surrounding page remains server-rendered.
   if (!hydrated) {
-    return <div className="min-h-[570px]" aria-busy="true"><p role="status" className="status-message text-brand-muted">Loading your wheel…</p></div>;
+    const placeholder = <div className="min-h-[570px]" aria-busy="true"><p role="status" className="status-message text-brand-muted">Loading your wheel…</p></div>;
+    return drawingResource ? <>{placeholder}{drawingResource}</> : placeholder;
   }
-  return <RestoredWheelExperience key={tool.storageKey} tool={tool} />;
+  return <RestoredWheelExperience key={tool.storageKey} tool={tool} drawingResource={drawingResource} />;
 }
 
-function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
+function RestoredWheelExperience({ tool, drawingResource }: { tool: WheelTool; drawingResource?: ReactNode }) {
   const quickAnswerEnabled = tool.storageKey === YES_NO_TOOL.storageKey;
   const isDrawing = tool.storageKey === DRAWING_TOOL.storageKey;
   const [drawingSettings, setDrawingSettings] = useState(DEFAULT_DRAWING_SETTINGS);
@@ -173,6 +174,7 @@ function RestoredWheelExperience({ tool }: { tool: WheelTool }) {
         </div>
         {isDrawing && <DrawingClassroomSettings settings={drawingSettings} onChange={setDrawingSettings} />}
         {error && <p role="alert" className="status-message status-warning mt-3">{error}</p>}
+        {isDrawing && drawingResource}
       </section>
       <WheelEditor titlePlaceholder={tool.titlePlaceholder ?? (tool.modeControls ? "What should I decide?" : undefined)} presets={tool.presets && <WheelPresets tool={tool} wheel={session.wheel} disabled={spinning} onReplace={replaceWithPreset} showActiveCollection={isDrawing} />} title={title} onTitleChange={editTitle} areaRef={editorArea} onDone={() => navigateTo(wheelArea.current)} validationId={validationId} options={options} disabled={spinning} onEdit={editOption} onAdd={addOption} onDelete={deleteOption} />
     </div>

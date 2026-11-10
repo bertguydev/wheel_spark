@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WheelExperience } from "@/components/WheelExperience";
 import { DRAWING_TOOL } from "@/lib/wheel-tools";
+import styles from "@/components/DrawingClassroom.module.css";
 
 const title = "Drawing Ideas Wheel – What Should I Draw? | SparkyWheel";
 const description = "Not sure what to draw? Spin the SparkyWheel Drawing Ideas Wheel for a random drawing prompt, or choose from easy, animal, and creative drawing ideas.";
@@ -27,7 +28,27 @@ export default function DrawingIdeasWheelPage() {
           <h1>What Should I Draw? <span>Spin the Drawing Ideas Wheel</span></h1>
           <p>Spin for a drawing challenge you can try on your own or share with the class. Age and activity time are optional.</p>
         </div>
-        <WheelExperience tool={DRAWING_TOOL} />
+        <WheelExperience tool={DRAWING_TOOL} drawingResource={
+          <section className={styles.worksheet} aria-labelledby="drawing-worksheet-title">
+            <h2 id="drawing-worksheet-title">Take the Challenge Offline!</h2>
+            <p>Turn your wheel result into a classroom activity with a free printable worksheet.</p>
+            <a
+              className={`button button-secondary ${styles.worksheetLink}`}
+              href="/sparkywheel-5-minute-drawing-worksheet.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9V3h12v6M6 17H3v-8h18v8h-3M6 14h12v7H6zM17 12h1" />
+              </svg>
+              <span>Print Drawing Worksheet<span className="sr-only"> (PDF, opens in a new tab)</span></span>
+            </a>
+            <div className={styles.worksheetGuide}>
+              <h3>Make it a five-minute drawing activity</h3>
+              <p>Spin the wheel and have students write down the prompt. Give them five minutes to draw, then ask them to explain one creative detail they added and why. Younger students can share their reflections aloud.</p>
+            </div>
+          </section>
+        } />
         <div className="home-guide">
           <section aria-labelledby="drawing-about">
             <h2 id="drawing-about">What should I draw?</h2>

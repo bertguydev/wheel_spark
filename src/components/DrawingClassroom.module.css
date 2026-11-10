@@ -18,6 +18,24 @@
   .fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr); }
 }
 
+.worksheet {
+  margin: .75rem auto 0;
+  padding: .875rem 1rem;
+  width: 100%;
+  max-width: 30rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-input);
+  background: var(--surface);
+  text-align: left;
+}
+
+.worksheet h2 { font-size: 1rem; font-weight: 700; }
+.worksheet h3 { font-size: .875rem; font-weight: 600; }
+.worksheet p { margin-top: .25rem; color: var(--muted); font-size: .875rem; line-height: 1.55; }
+.worksheetLink { margin-top: .75rem; gap: .5rem; text-align: center; }
+.worksheetLink svg { flex: none; }
+.worksheetGuide { margin-top: .875rem; }
+
 .details { display: grid; gap: .6em; margin-top: .85em; }
 .instructions, .timeTip { line-height: 1.5; }
 .duration { font-size: .85em; font-weight: 600; color: var(--ready-ink); }
