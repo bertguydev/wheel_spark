@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClassroomRecommendation } from "@/components/ClassroomRecommendation";
 import { SiteHeader } from "@/components/SiteHeader";
 import { WheelExperience } from "@/components/WheelExperience";
 import { DRAWING_TOOL } from "@/lib/wheel-tools";
@@ -47,6 +48,13 @@ export default function DrawingIdeasWheelPage() {
               <h3>Make it a five-minute drawing activity</h3>
               <p>Spin the wheel and have students write down the prompt. Give them five minutes to draw, then ask them to explain one creative detail they added and why. Younger students can share their reflections aloud.</p>
             </div>
+            <ClassroomRecommendation
+              heading="Make classroom decisions more fun"
+              title="Yes or No Wheel"
+              description="Should we try another drawing challenge? Add a surprise element? Let Sparky help make your next classroom decision."
+              action="Try the Yes or No Wheel"
+              href="/yes-or-no-wheel"
+            />
           </section>
         } />
         <div className="home-guide">

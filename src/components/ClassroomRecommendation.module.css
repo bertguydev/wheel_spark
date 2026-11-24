@@ -1,0 +1,43 @@
+.recommendation {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.recommendation .heading {
+  margin-bottom: .4rem;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.recommendation .card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: .625rem;
+  padding: .625rem .75rem;
+  box-shadow: none;
+}
+
+.illustration {
+  width: clamp(2rem, 10vw, 2.75rem);
+  height: auto;
+  border-radius: .625rem;
+  background: var(--cream);
+}
+
+.copy {
+  display: grid;
+  gap: .2rem;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.title { font-size: .875rem; font-weight: 600; }
+.description { color: var(--muted); }
+.action { color: var(--action); font-weight: 600; text-wrap: balance; }
+
+.card:is(:hover, :focus-visible) .action {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
