@@ -14,10 +14,14 @@ export function Wheel({
   options,
   spin,
   onFinish,
+  segmentColors,
+  ariaLabel,
 }: {
   options: WheelOption[];
   spin: SpinAnimation | null;
   onFinish: () => void;
+  segmentColors?: readonly string[];
+  ariaLabel?: string;
 }) {
   const rotor = useRef<HTMLDivElement>(null);
 
@@ -75,7 +79,7 @@ export function Wheel({
         </svg>
       </div>
       <div ref={rotor} style={{ transform: `rotate(${spin?.to ?? 0}deg)` }}>
-        <svg viewBox="0 0 400 400" className="block h-auto w-full" role="img" aria-label={`Decision wheel with ${options.length} equal options`}>
+        <svg viewBox="0 0 400 400" className="block h-auto w-full" role="img" aria-label={ariaLabel ?? `Decision wheel with ${options.length} equal options`}>
           <title>{options.map((option) => option.label || "Unnamed option").join(", ")}</title>
           {options.map((option, index) => {
             const start = index * segmentAngle;
@@ -88,7 +92,7 @@ export function Wheel({
             const label = characters.length > limit ? characters.slice(0, limit - 1).join("") + "…" : characters.join("");
             return (
               <g key={option.id}>
-                <path d={`M200 200 L${x1} ${y1} A190 190 0 0 1 ${x2} ${y2} Z`} fill={COLORS[index === options.length - 1 && index % COLORS.length === 0 ? 2 : index % COLORS.length]} stroke="var(--surface)" strokeWidth="2">
+                <path d={`M200 200 L${x1} ${y1} A190 190 0 0 1 ${x2} ${y2} Z`} fill={segmentColors?.[index % segmentColors.length] ?? COLORS[index === options.length - 1 && index % COLORS.length === 0 ? 2 : index % COLORS.length]} stroke="var(--surface)" strokeWidth="2">
                   <title>{option.label || "Unnamed option"}</title>
                 </path>
                 <g transform={`rotate(${middle - 90} 200 200)`}>

@@ -5,6 +5,11 @@ export const YES_NO_WHEEL: WheelState = {
   title: "",
   options: [{ id: 0, label: "Yes" }, { id: 1, label: "No" }],
 };
+export const YES_NO_SEGMENTS = Array.from({ length: 4 }, () => YES_NO_WHEEL.options)
+  .flat()
+  .map(({ label }, id) => ({ id, label }));
+// The extreme offsets still leave 13.5° between the pointer and a boundary.
+const STOP_OFFSETS = [-9, -3, 3, 9] as const;
 export const QUICK_ANSWER_DELAY = 300;
 export const SPARKY_QUOTES = [
   "Sometimes the hardest part of a decision is making one.",
@@ -41,13 +46,18 @@ export function createYesNoDecision(callbacks: {
     choose(kind: DecisionKind, reducedMotion: boolean) {
       if (pending) return false;
       const winner = selectWinnerIndex(2);
-      pending = { kind, answer: winner === 0 ? "Yes" : "No" };
+      const answer = winner === 0 ? "Yes" : "No";
       if (kind === "quick") {
+        pending = { kind, answer };
         callbacks.onStart(kind, null);
         timer = setTimeout(finish, QUICK_ANSWER_DELAY);
       } else {
+        const variants = STOP_OFFSETS.length;
+        const placement = selectWinnerIndex(YES_NO_SEGMENTS.length / YES_NO_WHEEL.options.length * variants);
+        const segment = Math.floor(placement / variants) * YES_NO_WHEEL.options.length + winner;
         const from = rotation;
-        rotation = calculateRotation(from, winner, 2);
+        rotation = calculateRotation(from, segment, YES_NO_SEGMENTS.length, STOP_OFFSETS[placement % variants]);
+        pending = { kind, answer };
         callbacks.onStart(kind, { from, to: rotation, duration: reducedMotion ? 0 : 4800 });
       }
       return true;

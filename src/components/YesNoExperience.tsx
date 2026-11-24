@@ -5,7 +5,9 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type Re
 import { Wheel } from "@/components/Wheel";
 import { ShareControls } from "@/components/ShareControls";
 import { selectWinnerIndex, type SpinAnimation } from "@/lib/wheel";
-import { createYesNoDecision, SPARKY_QUOTES, YES_NO_WHEEL, type Answer, type DecisionKind } from "@/lib/yes-no-decision";
+import { createYesNoDecision, SPARKY_QUOTES, YES_NO_SEGMENTS, YES_NO_WHEEL, type Answer, type DecisionKind } from "@/lib/yes-no-decision";
+
+const YES_NO_COLORS = ["var(--coral)", "var(--butter)"];
 
 const subscribe = () => () => {};
 const clientSnapshot = () => true;
@@ -61,17 +63,24 @@ export function YesNoExperience({ classroom }: { classroom: ReactNode }) {
   return (
     <div className="yes-no-experience">
       <section id="wheel" aria-label="Yes or No decision wheel" className="decision-wheel">
-        <Wheel options={YES_NO_WHEEL.options} spin={spin} onFinish={finishSpin} />
+        <Wheel options={YES_NO_SEGMENTS} spin={spin} onFinish={finishSpin} segmentColors={YES_NO_COLORS} ariaLabel="Decision wheel with eight alternating Yes and No segments" />
         <div className="decision-actions">
-          <button className="button button-primary" type="button" disabled={disabled} onClick={() => choose("spin")}>
-            <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 3 17 10 6 17Z" fill="currentColor" /></svg>
-            {phase === "spin" ? "Spinning…" : "Spin the Wheel"}<span className="spin-arrow" aria-hidden="true">→</span>
-          </button>
-          <button className="button button-secondary" type="button" disabled={disabled} onClick={() => choose("quick")}>
-            <svg aria-hidden="true" viewBox="0 0 20 20"><path d="m11 1-8 11h6l-1 7 9-11h-6Z" fill="currentColor" /></svg>
-            Quick Answer
-          </button>
+          <div>
+            <button className="button button-primary w-full" type="button" aria-describedby="yes-no-spin-description" disabled={disabled} onClick={() => choose("spin")}>
+              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M6 3 17 10 6 17Z" fill="currentColor" /></svg>
+              {phase === "spin" ? "Spinning…" : "Spin the Wheel"}<span className="spin-arrow" aria-hidden="true">→</span>
+            </button>
+            <p id="yes-no-spin-description" className="mt-1 text-center text-xs text-brand-muted">Enjoy the suspense</p>
+          </div>
+          <div>
+            <button className="button button-secondary w-full" type="button" aria-describedby="yes-no-quick-description" disabled={disabled} onClick={() => choose("quick")}>
+              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="m11 1-8 11h6l-1 7 9-11h-6Z" fill="currentColor" /></svg>
+              Quick Answer
+            </button>
+            <p id="yes-no-quick-description" className="mt-1 text-center text-xs text-brand-muted">Skip the spin</p>
+          </div>
         </div>
+        <p className="mt-2 text-center text-xs text-brand-muted">Equal 50/50 odds with either option.</p>
         {error && <p role="alert" className="status-message status-warning">{error}</p>}
       </section>
       <section className="sparky-card" aria-label="Sparky’s answer">

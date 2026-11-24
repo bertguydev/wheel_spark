@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { createYesNoDecision, QUICK_ANSWER_DELAY, YES_NO_WHEEL } from "../src/lib/yes-no-decision.ts";
+import { createYesNoDecision, QUICK_ANSWER_DELAY, YES_NO_SEGMENTS, YES_NO_WHEEL } from "../src/lib/yes-no-decision.ts";
 import { createShareUrl, sharedWheelFromUrl } from "../src/lib/wheel-sharing.ts";
 
 function setup(context, samples) {
@@ -40,22 +40,31 @@ test("consecutive identical answers complete independently, including reduced mo
 });
 
 test("animated spin locks Quick Answer and reveals the answer under the pointer", context => {
-  const { decision, starts, results, random } = setup(context, [0, 1]);
-  for (const [index, reduced] of [[0, false], [1, true]]) {
+  assert.deepEqual(YES_NO_SEGMENTS.map(({ label }) => label), ["Yes", "No", "Yes", "No", "Yes", "No", "Yes", "No"]);
+  const draws = Array.from({ length: 32 }, (_, index) => [index % 2, Math.floor(index / 2)]);
+  const { decision, starts, results, random } = setup(context, draws.flat());
+  const stops = Array.from({ length: 8 }, () => new Set());
+  for (const [index, [winner, placement]] of draws.entries()) {
+    const reduced = index % 2 === 1;
     assert.equal(decision.choose("spin", reduced), true);
     assert.equal(decision.choose("quick", reduced), false);
     context.mock.timers.tick(6000); // Spin completion belongs to the animation, not a timer.
     assert.equal(results.length, index);
     const spin = starts[index].spin;
     assert.equal(spin.duration, reduced ? 0 : 4800);
-    assert.equal((spin.to + (index + .5) * 180) % 360, 0);
+    const pointer = (360 - spin.to % 360) % 360;
+    const segment = Math.floor(pointer / 45);
+    assert.equal(segment, Math.floor(placement / 4) * 2 + winner);
+    assert.ok(pointer % 45 >= 13.5 && pointer % 45 <= 31.5);
+    stops[segment].add(pointer);
     if (index) assert.equal(spin.from, starts[index - 1].spin.to);
     decision.finishSpin();
     decision.finishSpin(); // Duplicate completion must not publish a second result.
     assert.equal(results.length, index + 1);
+    assert.equal(results[index], YES_NO_SEGMENTS[segment].label);
   }
-  assert.deepEqual(results, ["Yes", "No"]);
-  assert.equal(random.mock.callCount(), 2);
+  assert.ok(stops.every(positions => positions.size === 4));
+  assert.equal(random.mock.callCount(), 64);
 });
 
 test("unmount cancellation prevents a delayed result", context => {
@@ -67,10 +76,10 @@ test("unmount cancellation prevents a delayed result", context => {
   assert.deepEqual(results, []);
 });
 
-test("random-source failure does not lock out a retry", context => {
+test("random-source failure during stop selection does not lock out a retry", context => {
   let calls = 0;
   context.mock.method(globalThis.crypto, "getRandomValues", buffer => {
-    if (calls++ === 0) throw Error("Denied");
+    if (calls++ === 1) throw Error("Denied");
     buffer[0] = 1;
     return buffer;
   });

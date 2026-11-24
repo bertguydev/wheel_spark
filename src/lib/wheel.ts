@@ -26,10 +26,10 @@ export function selectWinnerIndex(count: number): number {
   return sample[0] % count;
 }
 
-export function calculateRotation(current: number, winner: number, count: number) {
+export function calculateRotation(current: number, winner: number, count: number, offsetDegrees = 0) {
   const segmentAngle = 360 / count;
-  // Segment zero starts at the top; the pointer must meet the winner's center.
-  const target = (360 - (winner + 0.5) * segmentAngle) % 360;
+  // Segment zero starts at the top; measure the offset from the winner's center.
+  const target = (360 - ((winner + 0.5) * segmentAngle + offsetDegrees)) % 360;
   const normalized = ((current % 360) + 360) % 360;
   const remaining = (target - normalized + 360) % 360;
   return current + 5 * 360 + remaining;

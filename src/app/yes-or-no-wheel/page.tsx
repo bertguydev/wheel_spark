@@ -25,7 +25,7 @@ export default function YesOrNoWheelPage() {
       <main id="main" className="mx-auto max-w-[1180px] px-4 pb-5 sm:px-8" tabIndex={-1}>
         <div className="hero food-hero">
           <h1>Yes or No <span>Wheel</span></h1>
-          <p>Can&apos;t decide? Spin the wheel and let SparkyWheel choose Yes or No for you.</p>
+          <p>Need a random Yes or No? Spin the wheel for a little suspense, or choose Quick Answer for a fast result.</p>
         </div>
         <YesNoExperience classroom={
           <section className="classroom-helper" aria-labelledby="classroom-heading">
