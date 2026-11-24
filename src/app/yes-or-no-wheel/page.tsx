@@ -1,3 +1,4 @@
+import { ClassroomRecommendation } from "@/components/ClassroomRecommendation";
 import { SiteHeader } from "@/components/SiteHeader";
 import type { Metadata } from "next";
 import { YesNoExperience } from "@/components/YesNoExperience";
@@ -41,6 +42,13 @@ export default function YesOrNoWheelPage() {
               </ul>
             </div>
             <p className="classroom-note">Best for playful choices and activities—not grading, student discipline, or decisions requiring fairness beyond a random choice.</p>
+            <ClassroomRecommendation
+              heading="Looking for another classroom activity?"
+              title="Drawing Ideas Wheel"
+              description="Give your students a creative warm-up with random drawing prompts, age-appropriate collections, and a printable worksheet."
+              action="Explore the Drawing Ideas Wheel"
+              href="/drawing-ideas-wheel"
+            />
           </section>
         } />
         <div className="home-guide">
